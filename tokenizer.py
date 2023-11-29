@@ -12,7 +12,6 @@ class SimpleTokenizer:
         self.regex = "[a-z-]{3,}"
         #self.regex = "[a-z]+"
         #self.regex = "[\w-]+"
-        self.token_to_id = {}
         self.vocab_size = 0
         self.total_number_tokens = 0
         self.ignore_list = set()
@@ -42,13 +41,11 @@ class SimpleTokenizer:
         return map(subsampling_text, collection)
     
     def build_tokenizer(self, collection, min_freq=5):
-        
+        vocab = set()
         for article_tokens in self.iter_tokenizer(collection):
             for token in article_tokens:
                 self.token_freq[token] += 1
-                if token not in self.token_to_id:
-                    self.token_to_id[token] = self.vocab_size
-                    self.vocab_size += 1
+                vocab.add(token)                    
                     
         self.token_freq = dict(self.token_freq)
         # remove tokens with freq < min_freq
@@ -57,11 +54,19 @@ class SimpleTokenizer:
                 #print("add min freq", token, freq)
                 self.ignore_list.add(token)
                 
-        # remove from token_to_id
+        # rebuild token_to_id to have a sequential idx...
+        # not the must efficient implementation
+        self.token_to_id = {}
+        for token in vocab:
+            if token not in self.ignore_list:
+                self.token_to_id[token] = len(self.token_to_id)
+            #del self.token_freq[ignore_token]
+        
         for ignore_token in self.ignore_list:
-            del self.token_to_id[ignore_token]
             del self.token_freq[ignore_token]
-            
+        
+        self.vocab_size = len(self.token_to_id)
+        
         self.total_number_tokens = sum(self.token_freq.values())
         
     def save(self, filepath):

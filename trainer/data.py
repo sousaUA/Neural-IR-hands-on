@@ -147,7 +147,7 @@ class InferenceRankingIterator(RankingIterator):
 
         self.iterator = iter(document_iterator_func())
 
-def create_bioASQ_synthetic_dataset(positive_data_path,
+def create_training_dataset(positive_data_path,
                                     negative_data_path,
                                     collection_data_path,
                                     tokenizer,

@@ -179,7 +179,7 @@ class InferenceDataset(torch.utils.data.IterableDataset):
 
         self.collection = collection
             
-        
+        self.epoch = 0
         #exit()
     
     def get_n_questions(self):

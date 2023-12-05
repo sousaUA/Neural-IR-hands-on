@@ -20,7 +20,7 @@ class BasicSampler:
 
     def choose_negative_doc(self, sample_index, epoch, q_id):
         if self.collection:
-            neg_pmid = random.choice(self.slice_dataset[q_id]["neg_docs"])["id"]
+            neg_pmid = random.choice(self.slice_dataset[q_id]["neg_docs"])#["id"]
             return self.collection[neg_pmid]
         else:
             return random.choice(self.slice_dataset[q_id]["neg_docs"])["text"]

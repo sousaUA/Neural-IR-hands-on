@@ -233,8 +233,9 @@ class InferenceRankingIterator(RankingIterator):
     def get_n_samples(dataset):
         return sum([len(x["documents"]) for x in dataset.values()])
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, collection, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.collection = collection
         def document_iterator_func():
             for q_id in self.slice_dataset:
                 q_text = self.slice_dataset[q_id]["question"]

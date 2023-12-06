@@ -144,6 +144,7 @@ class InferenceDataset(torch.utils.data.IterableDataset):
                  collection,
                  tokenizer, 
                  iterator_class: Union[IteratorSamplerCombiner, RankingIterator], 
+                 gs_path=None,
                  max_length = -1,
                  max_questions:int=-1):
         """
@@ -154,7 +155,9 @@ class InferenceDataset(torch.utils.data.IterableDataset):
         with open(bm25_run_path) as f:
             dataset = {q_data["id"]:{"documents":q_data["documents"],
                                           "question":q_data["question"]} for q_data in map(json.loads, f)} 
-            
+        
+        if gs_path is not None:
+            qrels = get_qrels(gs_path)
     
         self.tokenizer = tokenizer
         self.iterator_class = iterator_class
@@ -170,9 +173,13 @@ class InferenceDataset(torch.utils.data.IterableDataset):
             queries_ids = queries_ids[:max_questions]
 
         self.dataset = {}
+        self.qrels = {}
         for q_id in queries_ids:
             self.dataset[q_id] = dataset[q_id]
-
+            if gs_path is not None:
+                self.qrels[q_id] = qrels[q_id]
+            
+        del qrels
         del dataset
         
         self.expected_number_of_samples = self.iterator_class.get_n_samples(self.dataset)
@@ -181,6 +188,9 @@ class InferenceDataset(torch.utils.data.IterableDataset):
             
         self.epoch = 0
         #exit()
+    
+    def get_qrels(self):
+        return self.qrels
     
     def get_n_questions(self):
         return len(self.dataset)

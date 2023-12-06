@@ -248,7 +248,7 @@ class RankerTrainer(Trainer):
                 labels = self._nested_gather(labels)
                 labels_host = labels if labels_host is None else nested_concat(labels_host, labels, padding_index=-100)
             if inputs_decode is not None:
-                inputs_decode = self.pad_across_processes(inputs_decode)
+                inputs_decode = self.accelerator.pad_across_processes(inputs_decode)
                 inputs_decode = self._nested_gather(inputs_decode)
                 inputs_host = (
                     inputs_decode
@@ -256,7 +256,7 @@ class RankerTrainer(Trainer):
                     else nested_concat(inputs_host, inputs_decode, padding_index=-100)
                 )
             if logits is not None:
-                logits = self.pad_across_processes(logits)
+                logits = self.accelerator.pad_across_processes(logits)
                 logits = self._nested_gather(logits)
                 if self.preprocess_logits_for_metrics is not None:
                     logits = self.preprocess_logits_for_metrics(logits, labels)

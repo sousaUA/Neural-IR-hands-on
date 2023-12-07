@@ -13,6 +13,13 @@ def setup_wandb(dataset):
     os.environ["WANDB_WATCH"]="false"
 
 
+def load_collection_lookup(path):
+    collection = {}
+    with open(path) as f:
+        for sample in map(json.loads, f):
+            collection[sample["id"]] = sample["text"]
+    return collection
+
 def _load_flat_config(path):
     assert path is not None, "`path` cannot be none"
     with open(path) as fp:

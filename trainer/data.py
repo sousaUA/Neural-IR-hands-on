@@ -131,7 +131,7 @@ def get_qrels(path_to_gs):
     
     qrels = {}
     
-    with open("dev_set_nq_gs.jsonl") as f:
+    with open(path_to_gs) as f:
         for q_data in map(json.loads, f):
             qrels[q_data["id"]] = {docid:1 for docid in q_data["documents"]}
             

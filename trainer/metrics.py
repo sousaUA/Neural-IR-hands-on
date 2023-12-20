@@ -19,4 +19,4 @@ class RanxMetrics:
         qrels = Qrels(self.qrels_dict)
         run = Run(run_dict)
 
-        return evaluate(qrels, run, ["ndcg@100","ndcg@10", "recall@10","map@10"])
+        return evaluate(qrels, run, metrics=["ndcg@100","ndcg@10", "recall@10","map@10"], make_comparable=True)
